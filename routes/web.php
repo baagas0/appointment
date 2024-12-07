@@ -72,4 +72,11 @@ Route::group(['middleware' => 'auth', 'as' => 'backoffice.', 'prefix' => 'backof
     Route::post('registrasi/data_jadwal_periksa', ['as' => 'registrasi.data_jadwal_periksa', 'uses' => 'App\Http\Controllers\RegistrasiController@dataJadwalPeriksa']);
     Route::post('registrasi/store', ['as' => 'registrasi.store', 'uses' => 'App\Http\Controllers\RegistrasiController@store']);
     Route::post('registrasi/upsert-periksa', ['as' => 'registrasi.upsert-periksa', 'uses' => 'App\Http\Controllers\RegistrasiController@upsertPeriksa']);
+
+    // User
+    Route::get('users', ['as' => 'users.index', 'uses' => 'App\Http\Controllers\UserController@index']);
+    Route::post('users/data', ['as' => 'users.data', 'uses' => 'App\Http\Controllers\UserController@data']);
+    Route::post('users', ['as' => 'users.store', 'uses' => 'App\Http\Controllers\UserController@store']);
+    Route::put('users/{id}', ['as' => 'users.update', 'uses' => 'App\Http\Controllers\UserController@update']);
+    Route::delete('users/{id}', ['as' => 'users.destroy', 'uses' => 'App\Http\Controllers\UserController@destroy']);
 });
