@@ -30,7 +30,7 @@ class PasienRequest extends FormRequest
                     'nama' => 'required|min:1|max:255',
                     'alamat' => 'required|min:1|max:255',
                     'no_ktp' => 'required|min:1|max:20',
-                    'no_hp' => 'required|min:1|max:15',
+                    'no_hp' => 'required|min:16|max:16',
                 ];
             case 'PUT':
             case 'PATCH':
@@ -38,7 +38,7 @@ class PasienRequest extends FormRequest
                     'nama' => 'required|min:1|max:255',
                     'alamat' => 'required|min:1|max:255',
                     'no_ktp' => 'required|min:1|max:20',
-                    'no_hp' => 'required|min:1|max:15',
+                    'no_hp' => 'required|min:16|max:16',
                 ];
             default:
                 break;

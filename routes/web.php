@@ -80,4 +80,13 @@ Route::group(['middleware' => 'auth', 'as' => 'backoffice.', 'prefix' => 'backof
     Route::post('users', ['as' => 'users.store', 'uses' => 'App\Http\Controllers\UserController@store']);
     Route::put('users/{id}', ['as' => 'users.update', 'uses' => 'App\Http\Controllers\UserController@update']);
     Route::delete('users/{id}', ['as' => 'users.destroy', 'uses' => 'App\Http\Controllers\UserController@destroy']);
+
+    // Pasien
+    Route::get('antrian', ['as' => 'antrian.index', 'uses' => 'App\Http\Controllers\AntrianController@index']);
+    Route::post('antrian/data-menunggu', ['as' => 'antrian.data-menunggu', 'uses' => 'App\Http\Controllers\AntrianController@dataMenunggu']);
+    Route::put('antrian/panggil/{id}', ['as' => 'antrian.panggil', 'uses' => 'App\Http\Controllers\AntrianController@panggil']);
+
+    Route::get('antrian/display', ['as' => 'antrian.display', 'uses' => 'App\Http\Controllers\AntrianController@display']);
+    Route::post('antrian/data-display', ['as' => 'antrian.data-display', 'uses' => 'App\Http\Controllers\AntrianController@dataDisplay']);
+    Route::post('antrian/selesai-display/{id}', ['as' => 'antrian.selesai-display', 'uses' => 'App\Http\Controllers\AntrianController@selesaiDisplay']);
 });

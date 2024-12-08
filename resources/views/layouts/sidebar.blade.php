@@ -49,6 +49,12 @@
                         <a href="{{ route('backoffice.registrasi.history') }}"> <i data-feather="list" class="align-self-center menu-icon"></i><span>Pemeriksaan</span></a>
                     </li>
 
+                    <li class="menu-label mt-0">Antrian</li>
+
+                    <li>
+                        <a href="{{ route('backoffice.antrian.index') }}"> <i data-feather="list" class="align-self-center menu-icon"></i><span>Antrian</span></a>
+                    </li>
+
                 @elseif(auth()->user()->role === 'dokter')
                     <li class="menu-label mt-0">Pemeriksaan</li>
                     <li>
