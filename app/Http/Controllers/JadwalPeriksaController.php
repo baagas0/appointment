@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\JadwalPeriksaRequest;
 use App\Models\JadwalPeriksa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class JadwalPeriksaController extends Controller
 {
@@ -25,7 +26,13 @@ class JadwalPeriksaController extends Controller
      */
     public function data()
     {
-        $jadwalPeriksas = JadwalPeriksa::with('dokter')->orderBy('created_at', 'desc')->get();
+        $id_dokter = Auth::user()->id_dokter;
+        $jadwalPeriksas = JadwalPeriksa::with('dokter')
+            ->when($id_dokter, function ($query, $id_dokter) {
+                return $query->where('id_dokter', $id_dokter);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return datatables($jadwalPeriksas)->toJson();
     }
@@ -38,7 +45,20 @@ class JadwalPeriksaController extends Controller
      */
     public function store(JadwalPeriksaRequest $request)
     {
-        JadwalPeriksa::create($request->validated());
+        $payload = $request->validated();
+        $id_dokter = Auth::user()->id_dokter;
+        if ($id_dokter) {
+            $payload['id_dokter'] = $id_dokter;
+        }
+        $jadwal = JadwalPeriksa::create($payload);
+
+        if ($payload['status'] == 1) {
+            JadwalPeriksa::where('id_dokter', $payload['id_dokter'])
+            ->where('id', '!=', $jadwal->id)
+            ->update([
+                'status' => false,
+            ]);
+        }
 
         return response()->json([
             'message' => 'Jadwal Periksa created successfully'
@@ -55,7 +75,20 @@ class JadwalPeriksaController extends Controller
     public function update(JadwalPeriksaRequest $request, $id)
     {
         $jadwalPeriksa = JadwalPeriksa::findOrFail($id);
-        $jadwalPeriksa->update($request->validated());
+        $payload = $request->validated();
+        $id_dokter = Auth::user()->id_dokter;
+        if ($id_dokter) {
+            $payload['id_dokter'] = $id_dokter;
+        }
+        $jadwalPeriksa->update($payload);
+
+        if ($payload['status'] == 1) {
+            JadwalPeriksa::where('id_dokter', $payload['id_dokter'])
+                ->where('id', '!=', $id)
+                ->update([
+                    'status' => false,
+                ]);
+        }
 
         return response()->json([
             'message' => 'Jadwal Periksa updated successfully'

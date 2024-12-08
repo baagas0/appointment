@@ -36,6 +36,7 @@
                         <thead>
                             <tr>
                                 <th>Dibuat</th>
+                                <th>Hari</th>
                                 <th>Pasien</th>
                                 <th>No Antrian</th>
                                 <th>Keluhan</th>
@@ -103,6 +104,7 @@
                             return new Date(data).toLocaleString();
                         }
                     },
+                    { data: 'jadwal_periksa.hari', name: 'hari' },
                     { data: 'pasien.nama', name: 'nama' },
                     { data: 'no_antrian', name: 'no_antrian' },
                     { data: 'keluhan', name: 'keluhan' },
@@ -138,6 +140,12 @@
                     { data: 'id', name: 'action', orderable: false, searchable: false }
                 ],
                 columnDefs: [
+                    {
+                        targets: 1,
+                        render: function(data, type, row) {
+                            return `${row.jadwal_periksa.hari}<br />${row.jadwal_periksa.jam_mulai}-${row.jadwal_periksa.jam_selesai}`;
+                        }
+                    },
                     {
                         targets: -1,
                         render: function(data, type, row) {

@@ -27,18 +27,20 @@ class JadwalPeriksaRequest extends FormRequest
                 return [];
             case 'POST':
                 return [
-                    'id_dokter' => 'required|exists:dokters,id',
+                    'id_dokter' => 'nullable|exists:dokters,id',
                     'hari' => 'required|min:1|max:255',
                     'jam_mulai' => 'required|date_format:H:i',
                     'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+                    'status' => 'numeric',
                 ];
             case 'PUT':
             case 'PATCH':
                 return [
-                    'id_dokter' => 'required|exists:dokters,id',
-                    'hari' => 'required|min:1|max:255',
-                    'jam_mulai' => 'required|date_format:H:i',
-                    'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+                    'id_dokter' => 'nullable|exists:dokters,id',
+                    // 'hari' => 'required|min:1|max:255',
+                    // 'jam_mulai' => 'required|date_format:H:i',
+                    // 'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+                    'status' => 'numeric',
                 ];
             default:
                 break;

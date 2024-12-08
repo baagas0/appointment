@@ -7,6 +7,7 @@ use App\Models\DetailPeriksa;
 use App\Models\Dokter;
 use App\Models\JadwalPeriksa;
 use App\Models\Periksa;
+use App\Models\Poli;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,6 +56,13 @@ class RegistrasiController extends Controller
         $dokters = Dokter::with('poli')->orderBy('created_at', 'desc')->get();
 
         return datatables($dokters)->toJson();
+    }
+
+    public function dataPoli()
+    {
+        $polis = Poli::orderBy('created_at', 'desc')->get();
+
+        return datatables($polis)->toJson();
     }
 
     public function dataJadwalPeriksa(Request $request)

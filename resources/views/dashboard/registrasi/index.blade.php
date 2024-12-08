@@ -80,11 +80,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3 row">
+                        {{-- <div class="mb-3 row">
                             <label for="id_dokter" class="form-label col-sm-2">Dokter</label>
                             <div class="col-sm-10">
                                 <select class="form-control select2" id="id_dokter" name="id_dokter" required>
-                                    <!-- Options will be populated dynamically -->
+                                </select>
+                            </div>
+                        </div> --}}
+                        <div class="mb-3 row">
+                            <label for="id_poli" class="form-label col-sm-2">Poli</label>
+                            <div class="col-sm-10">
+                                <select class="form-control select2" id="id_poli" name="id_poli" required>
                                 </select>
                             </div>
                         </div>
@@ -136,6 +142,23 @@
             });
         }
 
+        const getPoli = () => {
+            $.ajax({
+                url: `${HOST_URL}/registrasi/data_poli`,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    let options = response.data.map(poli => `<option value="${poli.id}">${poli.nama_poli}</option>`);
+                    $('#id_poli').html([
+                        '<option value="">Pilih Poli</option>',
+                        ...options
+                    ]);
+                }
+            });
+        }
+
         const getJadwal = () => {
             const id_dokter = $('#id_dokter').val();
             const hari = $('input[name="hari"]:checked').val();
@@ -156,6 +179,8 @@
                     let options = response.data.map(jadwal => `
                         <input type="radio" class="btn-check" name="id_jadwal" id="${jadwal.id}" value="${jadwal.id}">
                         <label class="btn btn-outline-warning btn-sm" for="${jadwal.id}">
+                            ${jadwal.dokter.nama}
+                            <br>
                             ${jadwal.hari}
                             <br>
                             ${jadwal.jam_mulai} - ${jadwal.jam_selesai}
@@ -178,7 +203,13 @@
 
             getDokter();
 
+            getPoli();
+
             $(document.body).on("change","#id_dokter",function(){
+                getJadwal();
+            });
+
+            $(document.body).on("change","#id_poli",function(){
                 getJadwal();
             });
 

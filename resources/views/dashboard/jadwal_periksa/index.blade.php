@@ -42,6 +42,7 @@
                                 <th>Hari</th>
                                 <th>Jam Mulai</th>
                                 <th>Jam Selesai</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -65,12 +66,13 @@
                 <div class="modal-body">
                     <form id="formJadwalPeriksa">
                         <input type="hidden" id="id" name="id">
-                        <div class="mb-3">
-                            <label for="id_dokter" class="form-label">Dokter</label>
-                            <select class="form-control select2" id="id_dokter" name="id_dokter" required>
-                                <!-- Options will be populated dynamically -->
-                            </select>
-                        </div>
+                        @if (auth()->user()->id_periksa)
+                            <div class="mb-3">
+                                <label for="id_dokter" class="form-label">Dokter</label>
+                                <select class="form-control select2" id="id_dokter" name="id_dokter" required>
+                                </select>
+                            </div>
+                        @endif
                         <div class="mb-3">
                             <label class="form-label">Hari</label>
                             <div class="form-check">
@@ -109,6 +111,13 @@
                         <div class="mb-3">
                             <label for="jam_selesai" class="form-label">Jam Selesai</label>
                             <input type="time" class="form-control" id="jam_selesai" name="jam_selesai" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-control select2" id="status" name="status" required>
+                                <option value="0">Tidak Aktif</option>
+                                <option value="1">Aktif</option>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </form>
@@ -155,16 +164,24 @@
                     { data: 'hari', name: 'hari' },
                     { data: 'jam_mulai', name: 'jam_mulai' },
                     { data: 'jam_selesai', name: 'jam_selesai' },
+                    { data: 'status', name: 'status' },
                     { data: 'id', name: 'action', orderable: false, searchable: false }
                 ],
                 columnDefs: [
                     {
+                        targets: 4,
+                        render: function(data, type, row) {
+                            if (data) {
+                                return `<span class="badge badge-soft-success">Aktif</span>`;
+                            }
+                            return `<span class="badge badge-soft-danger">Tidak Aktif</span>`;
+                        }
+                    },
+                    {
                         targets: -1,
                         render: function(data, type, row) {
                             let json_row = JSON.stringify(row);
-                            return `
-                                    <button class="btn btn-sm btn-soft-primary btn-edit" data-row='${json_row}''><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-sm btn-soft-danger btn-destroy" data-id="${data}"><i class="fas fa-trash"></i></button>`;
+                            return `<button class="btn btn-sm btn-soft-primary btn-edit" data-row='${json_row}''><i class="fas fa-edit"></i></button>`;
                         }
                     }
                 ],
@@ -194,6 +211,13 @@
                 $('#modalForm form')[0].reset();
                 $('.modal-title').text('Tambah Data');
                 $('#modalForm').modal('show');
+
+                $('#status').val('0').trigger('change');
+
+                // UN DISABLED
+                $(`input[name="hari"]`).prop('disabled', false);
+                $('#jam_mulai').prop('disabled', false);
+                $('#jam_selesai').prop('disabled', false);
             });
 
             $('#modalForm form').on('submit', function(e) {
@@ -224,10 +248,15 @@
                 $('#modalForm').modal('show');
                 $('#id').val(row.id);
                 $('#id_dokter').val(row.id_dokter).trigger('change');
-                // $('#hari').val(row.hari);
                 $(`input[name="hari"][value="${row.hari}"]`).prop('checked', true);;
                 $('#jam_mulai').val(row.jam_mulai.slice(0, -3));
                 $('#jam_selesai').val(row.jam_selesai.slice(0, -3));
+                $('#status').val(row.status).trigger('change');
+
+                // DISABLED
+                $(`input[name="hari"]`).prop('disabled', true);
+                $('#jam_mulai').prop('disabled', true);
+                $('#jam_selesai').prop('disabled', true);
             });
 
             $('#datatable').on('click', '.btn-destroy', function() {

@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth', 'as' => 'backoffice.', 'prefix' => 'backof
     Route::post('registrasi/data', ['as' => 'registrasi.data', 'uses' => 'App\Http\Controllers\RegistrasiController@data']);
     Route::get('registrasi/history', ['as' => 'registrasi.history', 'uses' => 'App\Http\Controllers\RegistrasiController@history']);
     Route::post('registrasi/data_dokter', ['as' => 'registrasi.data_dokter', 'uses' => 'App\Http\Controllers\RegistrasiController@dataDokter']);
+    Route::post('registrasi/data_poli', ['as' => 'registrasi.data_poli', 'uses' => 'App\Http\Controllers\RegistrasiController@dataPoli']);
     Route::post('registrasi/data_jadwal_periksa', ['as' => 'registrasi.data_jadwal_periksa', 'uses' => 'App\Http\Controllers\RegistrasiController@dataJadwalPeriksa']);
     Route::post('registrasi/store', ['as' => 'registrasi.store', 'uses' => 'App\Http\Controllers\RegistrasiController@store']);
     Route::post('registrasi/upsert-periksa', ['as' => 'registrasi.upsert-periksa', 'uses' => 'App\Http\Controllers\RegistrasiController@upsertPeriksa']);
