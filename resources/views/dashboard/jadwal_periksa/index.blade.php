@@ -66,7 +66,7 @@
                 <div class="modal-body">
                     <form id="formJadwalPeriksa">
                         <input type="hidden" id="id" name="id">
-                        @if (auth()->user()->id_periksa)
+                        @if (auth()->user()->id_dokter)
                             <div class="mb-3">
                                 <label for="id_dokter" class="form-label">Dokter</label>
                                 <select class="form-control select2" id="id_dokter" name="id_dokter" required>
