@@ -184,7 +184,7 @@
                         Swal.fire('Success', response.message, 'success');
                     },
                     error: function(response) {
-                        Swal.fire('Error', 'Something went wrong', 'error');
+                        Swal.fire('Error', response?.responseJSON?.message || 'Something went wrong', 'error');
                     }
                 });
             });

@@ -29,16 +29,16 @@ class PasienRequest extends FormRequest
                 return [
                     'nama' => 'required|min:1|max:255',
                     'alamat' => 'required|min:1|max:255',
-                    'no_ktp' => 'required|min:1|max:20',
-                    'no_hp' => 'required|min:16|max:16',
+                    'no_ktp' => 'required|min:16|max:16|unique:pasiens,no_ktp',
+                    'no_hp' => 'required|min:9|max:14',
                 ];
             case 'PUT':
             case 'PATCH':
                 return [
                     'nama' => 'required|min:1|max:255',
                     'alamat' => 'required|min:1|max:255',
-                    'no_ktp' => 'required|min:1|max:20',
-                    'no_hp' => 'required|min:16|max:16',
+                    'no_ktp' => 'required|min:16|max:16|unique:pasiens,no_ktp,' . $this->route('pasien'),
+                    'no_hp' => 'required|min:9|max:14',
                 ];
             default:
                 break;
