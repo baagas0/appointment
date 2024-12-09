@@ -49,6 +49,42 @@
     "use strict";
     $(document).ready(function() {
         setInterval(function() {
+            function playAudioSequence(files) {
+                if (files.length === 0) return;
+
+                let audio = new Audio(files[0]);
+                audio.play();
+                audio.onended = function() {
+                    files.shift();
+                    playAudioSequence(files);
+                };
+            }
+
+            function playAudioForNumber(number) {
+                let audioFiles = ['/audio/antrian.wav']; // Add antrian.wav at the beginning
+                let numStr = number.toString().padStart(3, '0');
+                let hundreds = parseInt(numStr[0]);
+                let tens = parseInt(numStr[1]);
+                let units = parseInt(numStr[2]);
+
+                if (hundreds > 0) {
+                    audioFiles.push(`/audio/${hundreds}00.wav`);
+                }
+
+                if (tens > 1) {
+                    audioFiles.push(`/audio/${tens}0.wav`);
+                    if (units > 0) {
+                        audioFiles.push(`/audio/${units}.wav`);
+                    }
+                } else if (tens === 1) {
+                    audioFiles.push(`/audio/${tens}${units}.wav`);
+                } else if (units > 0) {
+                    audioFiles.push(`/audio/${units}.wav`);
+                }
+
+                playAudioSequence(audioFiles);
+            }
+
             $.ajax({
                 url: "{{ route('backoffice.antrian.data-display') }}",
                 type: "POST",
@@ -57,6 +93,7 @@
                     $("#ant-lama").html(response.sebelumnya.toString().padStart(3, '0'));
 
                     if (response.dipanggil) {
+                        playAudioForNumber(response.dipanggil);
                         Swal.fire({
                             // html: 'Antrian ' + response.dipanggil + ' dipanggil',
                             html: `

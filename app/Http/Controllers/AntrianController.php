@@ -33,7 +33,7 @@ class AntrianController extends Controller
                 $query->where('hari', $dayName);
             })
             ->with('pasien', 'jadwalPeriksa.dokter.poli')
-            ->orderBy('created_at', 'desc')->get();
+            ->orderBy('created_at', 'asc')->get();
 
         return datatables($data)->toJson();
     }
