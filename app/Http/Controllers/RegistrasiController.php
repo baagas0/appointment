@@ -77,6 +77,12 @@ class RegistrasiController extends Controller
             $query->where('id_dokter', $request->input('id_dokter'));
         }
 
+        if ($request->has('id_poli')) {
+            $query->whereHas('dokter', function ($query2) use ($request) {
+                $query2->where('id_poli', $request->input('id_poli'));
+            });
+        }
+
         $jadwalPeriksas = $query->get();
 
         return datatables($jadwalPeriksas)->toJson();
