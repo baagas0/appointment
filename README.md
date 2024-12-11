@@ -42,8 +42,10 @@ Buat kunci untuk laravel
 php artisan key:generate
 ```
 
-### 8. copy file .env.example ke .env
-Copy file .env.example
+### 8. jalankan laravel
+```bash
+php artisan serve
+```
 
 ## Login Admin
 nama pengguna: admin@gmail.com
