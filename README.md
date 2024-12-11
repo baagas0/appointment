@@ -25,19 +25,24 @@ Copy file .env.example
 ### 4. Sesuaikan file .env
 Sesuaikan file .env yang tadi dicopy seperti config host, nama database, username, password
 
-### 5. migrate dan seed
+### 5. install depencies
+```bash
+composer install
+```
+
+### 6. migrate dan seed
 Jalanin migrate dan seed
 ```bash
 php artisan migrate:fresh --seed
 ```
 
-### 6. generate key baru
+### 7. generate key baru
 Buat kunci untuk laravel
 ```bash
 php artisan key:generate
 ```
 
-### 7. copy file .env.example ke .env
+### 8. copy file .env.example ke .env
 Copy file .env.example
 
 ## Login Admin
