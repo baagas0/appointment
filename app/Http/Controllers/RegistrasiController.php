@@ -41,7 +41,7 @@ class RegistrasiController extends Controller
         $daftarPolis = DaftarPoli::with('jadwalPeriksa.dokter.poli', 'periksa', 'pasien');
         if (Auth::user()->role == 'dokter') {
             $daftarPolis->whereHas('jadwalPeriksa.dokter', function ($query) {
-                $query->where('id', Auth::id());
+                $query->where('id', Auth::user()->id_dokter);
             });
         } else if (Auth::user()->role == 'pasien') {
             $daftarPolis->where('id_pasien', $id_pasien);
