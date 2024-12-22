@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DokterRequest;
+use App\Http\Requests\ProfileDokterRequest;
 use App\Models\Dokter;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -76,6 +77,23 @@ class DokterController extends Controller
 
         return response()->json([
             'message' => 'Dokter updated successfully'
+        ], 200);
+    }
+
+    // UPDATE PROFILE DOKTER
+    public function updateProfile(ProfileDokterRequest $request, $id)
+    {
+        $dokter = Dokter::findOrFail($id);
+        $dokter->update($request->validated());
+
+        $user = User::where('id_dokter', $id)->first();
+        $user->update([
+            'name' => $request->nama,
+            'email' => $request->nama,
+        ]);
+
+        return response()->json([
+            'message' => 'Profile updated successfully'
         ], 200);
     }
 

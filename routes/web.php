@@ -21,6 +21,11 @@ Route::group(['middleware' => 'auth', 'as' => 'backoffice.', 'prefix' => 'backof
         return view('backoffice.dashboard');
     });
 
+    Route::get('/profile-dokter', function () {
+        return view('dashboard.profile-dokter');
+    })->name('profile-dokter');
+    Route::put('profile/dokter/{id}', ['as' => 'dokter.updateProfile', 'uses' => 'App\Http\Controllers\DokterController@updateProfile']);
+
     // PaymentMethod
     Route::get('payment_methods', ['as' => 'payment_methods.index', 'uses' => 'App\Http\Controllers\PaymentMethodController@index']);
     Route::post('payment_methods/data', ['as' => 'payment_methods.data', 'uses' => 'App\Http\Controllers\PaymentMethodController@data']);
