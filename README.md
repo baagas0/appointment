@@ -49,6 +49,6 @@ php artisan serve
 
 ## Login Admin
 nama pengguna: admin@gmail.com
-kata sandi: admin
+kata sandi: password
 
 (kalau tidak bisa login, cek database users)
