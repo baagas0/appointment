@@ -94,4 +94,7 @@ Route::group(['middleware' => 'auth', 'as' => 'backoffice.', 'prefix' => 'backof
     Route::get('antrian/display', ['as' => 'antrian.display', 'uses' => 'App\Http\Controllers\AntrianController@display']);
     Route::post('antrian/data-display', ['as' => 'antrian.data-display', 'uses' => 'App\Http\Controllers\AntrianController@dataDisplay']);
     Route::post('antrian/selesai-display/{id}', ['as' => 'antrian.selesai-display', 'uses' => 'App\Http\Controllers\AntrianController@selesaiDisplay']);
+
+    // Riwayat Pasien
+    Route::get('riwayat/pasien', ['as' => 'riwayat.pasien.index', 'uses' => 'App\Http\Controllers\RiwayatPasienController@index']);
 });

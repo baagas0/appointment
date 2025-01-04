@@ -50,6 +50,18 @@ class JadwalPeriksaController extends Controller
         if ($id_dokter) {
             $payload['id_dokter'] = $id_dokter;
         }
+
+        $count = JadwalPeriksa::where([
+            'id_dokter' => $payload['id_dokter'],
+            'hari' => $payload['hari'],
+        ])->count();
+
+        if ($count > 0) {
+            return response()->json([
+                'message' => 'Dokter sudah memiliki jadwal periksa pada hari tersebut'
+            ], 400);
+        }
+
         $jadwal = JadwalPeriksa::create($payload);
 
         if ($payload['status'] == 1) {

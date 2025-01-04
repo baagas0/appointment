@@ -49,6 +49,10 @@
                         <a href="{{ route('backoffice.registrasi.history') }}"> <i data-feather="list" class="align-self-center menu-icon"></i><span>Pemeriksaan</span></a>
                     </li>
 
+                    <li>
+                        <a href="{{ route('backoffice.riwayat.pasien.index') }}"> <i data-feather="list" class="align-self-center menu-icon"></i><span>Riwayat Pasien</span></a>
+                    </li>
+
                     <li class="menu-label mt-0">Antrian</li>
 
                     <li>
@@ -62,6 +66,9 @@
                     </li>
                     <li>
                         <a href="{{ route('backoffice.registrasi.history') }}"> <i data-feather="list" class="align-self-center menu-icon"></i><span>Pemeriksaan</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ route('backoffice.riwayat.pasien.index') }}"> <i data-feather="list" class="align-self-center menu-icon"></i><span>Riwayat Pasien</span></a>
                     </li>
                 @elseif(auth()->user()->role === 'pasien')
                     <li class="menu-label mt-0">Main</li>

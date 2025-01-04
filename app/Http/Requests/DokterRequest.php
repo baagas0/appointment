@@ -35,7 +35,7 @@ class DokterRequest extends FormRequest
             case 'PUT':
             case 'PATCH':
                 return [
-                    'nama' => 'required|min:1|max:255',
+                    'nama' => "required|min:1|max:255",
                     'alamat' => 'required|min:1|max:255',
                     'no_hp' => 'required|min:1|max:15',
                     'id_poli' => 'required|exists:polis,id',

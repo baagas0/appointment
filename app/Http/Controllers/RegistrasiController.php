@@ -35,7 +35,7 @@ class RegistrasiController extends Controller
         return view('dashboard.registrasi.detail', compact('data', 'ids_obat'));
     }
 
-    public function data()
+    public function data(Request $request)
     {
         $id_pasien = Auth::user()->id_pasien;
         $daftarPolis = DaftarPoli::with('jadwalPeriksa.dokter.poli', 'periksa', 'pasien');
@@ -46,6 +46,10 @@ class RegistrasiController extends Controller
         } else if (Auth::user()->role == 'pasien') {
             $daftarPolis->where('id_pasien', $id_pasien);
         }
+        $id_pasien = $request->get('id_pasien');
+        $daftarPolis->when($id_pasien, function ($query) use ($id_pasien) {
+            return $query->where('id_pasien', $id_pasien);
+        });
         $daftarPolis->orderBy('created_at', 'desc')->get();
 
         return datatables($daftarPolis)->toJson();

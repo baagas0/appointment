@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    Poli
+    Pasien
 @endsection
 
 @section('css')
@@ -17,10 +17,13 @@
             {{ config('app.name') }}
         @endslot
         @slot('li_2')
-            Riwayat Periksa
+            Pasien
         @endslot
         @slot('title')
-            History
+            Riwayat Pasien
+        @endslot
+        @slot('btn_create')
+            javascript:void(0);
         @endslot
     @endcomponent
 
@@ -28,20 +31,18 @@
         <div class="col-lg-12 col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Riwayat Periksa</h4>
+                    <h4 class="card-title">Pasien</h4>
                 </div>
                 <!--end card-header-->
                 <div class="card-body table-responsive">
                     <table id="datatable" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Dibuat</th>
-                                <th>Hari</th>
-                                <th>Pasien</th>
-                                <th>No Antrian</th>
-                                <th>Keluhan</th>
-                                <th>Biaya Periksa</th>
-                                <th>Status</th>
+                                <th>Nama</th>
+                                <th>Alamat</th>
+                                <th>No KTP</th>
+                                <th>No HP</th>
+                                <th>No RM</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -53,6 +54,42 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modalForm" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalFormLabel">Riwayat Pasien</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!--end modal-header-->
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="datatableHistory" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Dibuat</th>
+                                    <th>Hari</th>
+                                    <th>Pasien</th>
+                                    <th>No Antrian</th>
+                                    <th>Keluhan</th>
+                                    <th>Biaya Periksa</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be populated by DataTables -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--end modal-body-->
+            </div>
+            <!--end modal-content-->
+        </div>
+        <!--end modal-dialog-->
+    </div>
+    <!--end modal-->
 @endsection
 
 @section('script')
@@ -90,9 +127,57 @@
                 serverSide: true,
                 order: [],
                 ajax: {
+                    url: '{{ route('backoffice.pasien.data') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                },
+                columns: [
+                    { data: 'nama', name: 'nama' },
+                    { data: 'alamat', name: 'alamat' },
+                    { data: 'no_ktp', name: 'no_ktp' },
+                    { data: 'no_hp', name: 'no_hp' },
+                    { data: 'no_rm', name: 'no_rm' },
+                    { data: 'id', name: 'action', orderable: false, searchable: false }
+                ],
+                columnDefs: [
+                    {
+                        targets: -1,
+                        render: function(data, type, row) {
+                            let json_row = JSON.stringify(row);
+                            return `
+                                    <button class="btn btn-sm btn-soft-primary btn-edit" data-row='${json_row}''><i class="fas fa-eye"></i></button>`;
+                        }
+                    }
+                ],
+            });
+
+            return {
+                init: function() {
+                    table;
+                },
+                reload: function() {
+                    table.ajax.reload();
+                }
+            };
+
+        }();
+
+        var datatableHistory = function() {
+            var table = $('#datatableHistory').DataTable({
+                responsive: true,
+                searchDelay: 500,
+                processing: true,
+                serverSide: true,
+                order: [],
+                ajax: {
                     url: '{{ route('backoffice.registrasi.data') }}',
-                    data: {
-                        id_pasien: '{{ request()->get('id_pasien') }}',
+                    // data: {
+                    //     id_pasien: '{{ request()->get('id_pasien') }}',
+                    // },
+                    data: function(d) {
+                        d.id_pasien = window.currentPasienId; // Add global variable to store current pasien id
                     },
                     type: 'POST',
                     headers: {
@@ -120,7 +205,6 @@
                                 nominal = row.periksa.biaya_periksa;
                             }
 
-                            console.log('nominal', nominal);
                             return (nominal ? formatRupiah(nominal) : '-');
                         }
                     },
@@ -140,36 +224,12 @@
                             return `<span class="badge ${badge}">${status}</span>`;
                         }
                     },
-                    { data: 'id', name: 'action', orderable: false, searchable: false }
                 ],
                 columnDefs: [
                     {
                         targets: 1,
                         render: function(data, type, row) {
                             return `${row.jadwal_periksa.hari}<br />${row.jadwal_periksa.jam_mulai}-${row.jadwal_periksa.jam_selesai}`;
-                        }
-                    },
-                    {
-                        targets: -1,
-                        render: function(data, type, row) {
-                            let json_row = JSON.stringify(row);
-                            let renderButton = '';
-                            // const view = `<button class="btn btn-sm btn-soft-primary btn-edit"><i class="fas fa-edit"></i></button>`;
-                            // const delete = `<button class="btn btn-sm btn-soft-danger btn-destroy" data-id="${data}"><i class="fas fa-trash"></i></button>`;
-                            @if (auth()->user()->role == 'admin' || auth()->user()->role == 'dokter')
-                                renderButton = `
-                                    <a href="${HOST_URL}/registrasi/detail/${data}"><button class="btn btn-sm btn-soft-primary"><i class="fas fa-eye"></i></button></a>
-                                    <button class="btn btn-sm btn-soft-danger btn-destroy" data-id="${data}"><i class="fas fa-trash"></i></button>
-                                `;
-                            @else
-                                renderButton = `<a href="${HOST_URL}/registrasi/detail/${data}"><button class="btn btn-sm btn-soft-primary"><i class="fas fa-eye"></i></button></a>`;
-                            @endif
-
-                            @if(request()->get('id_pasien'))
-                                renderButton = '';
-                            @endif
-
-                            return renderButton;
                         }
                     }
                 ],
@@ -179,7 +239,9 @@
                 init: function() {
                     table;
                 },
-                reload: function() {
+                reload: function(params) {
+                    console.log(params)
+                    window.currentPasienId = params.id_pasien; // Store the id_pasien
                     table.ajax.reload();
                 }
             };
@@ -189,73 +251,14 @@
         jQuery(document).ready(function() {
             datatable.init();
 
-            $(".select2").select2({
-                width: '100%',
-                dropdownParent: $("#modalForm")
-            });
-
-            $('.btn-create').on('click', function() {
-                $('#id').val('');
-                $('#modalForm form')[0].reset();
-                $('.modal-title').text('Tambah Data');
-                $('#modalForm').modal('show');
-            });
-
-            $('#modalForm form').on('submit', function(e) {
-                e.preventDefault();
-                let id = $('#id').val();
-                let url = id ? `${HOST_URL}/poli/${id}` : `${HOST_URL}/poli`;
-                let method = id ? 'PUT' : 'POST';
-                $.ajax({
-                    url: url,
-                    method: method,
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        $('#modalForm').modal('hide');
-                        datatable.reload();
-                        Swal.fire('Success', response.message, 'success');
-                    },
-                    error: function(response) {
-                        Swal.fire('Error', 'Something went wrong', 'error');
-                    }
-                });
-            });
-
             $('#datatable').on('click', '.btn-edit', function() {
                 let row = $(this).data('row');
-                $('#modalForm form')[0].reset();
-                $('.modal-title').text('Edit Data: ' + row.nama_poli);
+                $('.modal-title').text('Riwayat Pasien: ' + row.nama);
                 $('#modalForm').modal('show');
-                $('#id').val(row.id);
-                $('#nama_poli').val(row.nama_poli);
-                $('#keterangan').val(row.keterangan);
-            });
+                // $('#id').val(row.id);
 
-            $('#datatable').on('click', '.btn-destroy', function() {
-                let id = $(this).data('id');
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    console.log(result)
-                    if (result.value) {
-                        $.ajax({
-                            url: `${HOST_URL}/poli/${id}`,
-                            method: 'DELETE',
-                            success: function(response) {
-                                datatable.reload();
-                                Swal.fire('Deleted!', response.message, 'success');
-                            },
-                            error: function(response) {
-                                Swal.fire('Error', 'Something went wrong', 'error');
-                            }
-                        });
-                    }
+                datatableHistory.reload({
+                    id_pasien: row.id,
                 });
             });
         });
